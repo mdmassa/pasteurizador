@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Pasteurizador</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --cor-aquecedor: #e74c3c;
+            --cor-refrigerador: #3498db;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        
+        .status-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+        
+        .sensor-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .sensor-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .sensor-title {
+            font-size: 1rem;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .sensor-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+        }
+        
+        .auecedor { color: var(--cor-aquecedor); }
+        .refrigerador { color: var(--cor-refrigerador); }
+        
+        .controle-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .controle-title {
+            text-align: center;
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .botoes-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .controle-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            min-width: 180px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+        }
+        
+        .dispositivo-nome {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        .btn-ligar {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .btn-desligar {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-on {
+            background: #2ecc71;
+        }
+        
+        .status-off {
+            background: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-temperature-high"></i> Pasteurizador de Leite</h1>
+        </header>
+        
+        <div class="status-container">
+            <div class="sensor-card">
+                <div class="sensor-title">Aquecedor A</div>
+                <div class="sensor-value auecedor">{{ status.temperaturas.a }} °C</div>
+            </div>
+            
+            <div class="sensor-card">
+                <div class="sensor-title">Aquecedor B</div>
+                <div class="sensor-value auecedor">{{ status.temperaturas.b }} °C</div>
+            </div>
+            
+            <div class="sensor-card">
+                <div class="sensor-title">Refrigerador</div>
+                <div class="sensor-value refrigerador">{{ status.temperaturas.r }} °C</div>
+            </div>
+            
+            <div class="sensor-card">
+                <div class="sensor-title">Temperatura Média</div>
+                <div class="sensor-value auecedor">{{ status.temperaturas.media }} °C</div>
+            </div>
+        </div>
+        
+        <div class="controle-container">
+            <h2 class="controle-title">Controle de Dispositivos</h2>
+            <div class="botoes-container">
+                <div class="controle-card">
+                    <div class="dispositivo-nome">Ebulidor</div>
+                    <form action="/controle" method="post">
+                        <input type="hidden" name="dispositivo" value="ebulidor">
+                        <button type="submit" name="acao" value="ligar" class="btn btn-ligar">
+                            <i class="fas fa-power-off"></i> Ligar
+                        </button>
+                        <button type="submit" name="acao" value="desligar" class="btn btn-desligar">
+                            <i class="fas fa-power-off"></i> Desligar
+                        </button>
+                    </form>
+                    <div style="margin-top: 15px;">
+                        Status: 
+                        <span class="status-indicator {% if status.reles.ebulidor %}status-on{% else %}status-off{% endif %}"></span>
+                        {% if status.reles.ebulidor %}LIGADO{% else %}DESLIGADO{% endif %}
+                    </div>
+                </div>
+                
+                <div class="controle-card">
+                    <div class="dispositivo-nome">Peltier (Refrigeração)</div>
+                    <form action="/controle" method="post">
+                        <input type="hidden" name="dispositivo" value="peltier">
+                        <button type="submit" name="acao" value="ligar" class="btn btn-ligar">
+                            <i class="fas fa-power-off"></i> Ligar
+                        </button>
+                        <button type="submit" name="acao" value="desligar" class="btn btn-desligar">
+                            <i class="fas fa-power-off"></i> Desligar
+                        </button>
+                    </form>
+                    <div style="margin-top: 15px;">
+                        Status: 
+                        <span class="status-indicator {% if status.reles.peltier %}status-on{% else %}status-off{% endif %}"></span>
+                        {% if status.reles.peltier %}LIGADO{% else %}DESLIGADO{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Atualizar dados a cada 5 segundos
+        setInterval(() => {
+            fetch("/")
+                .then(response => response.text())
+                .then(data => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data, "text/html");
+                    
+                    // Atualizar temperaturas
+                    document.querySelectorAll('.sensor-value').forEach((el, index) => {
+                        const newValue = doc.querySelectorAll('.sensor-value')[index].textContent;
+                        el.textContent = newValue;
+                    });
+                    
+                    // Atualizar estados
+                    const statusEbulidor = doc.querySelector('[name="dispositivo"][value="ebulidor"]')
+                        .nextElementSibling.querySelector('.status-indicator').classList.contains('status-on');
+                    
+                    const statusPeltier = doc.querySelector('[name="dispositivo"][value="peltier"]')
+                        .nextElementSibling.querySelector('.status-indicator').classList.contains('status-on');
+                    
+                    // Atualizar indicadores
+                    document.querySelector('[value="ebulidor"]').nextElementSibling
+                        .querySelector('.status-indicator').className = 
+                            `status-indicator ${statusEbulidor ? 'status-on' : 'status-off'}`;
+                            
+                    document.querySelector('[value="ebulidor"]').nextElementSibling
+                        .querySelector('div > span + span').textContent = 
+                            statusEbulidor ? 'LIGADO' : 'DESLIGADO';
+                            
+                    document.querySelector('[value="peltier"]').nextElementSibling
+                        .querySelector('.status-indicator').className = 
+                            `status-indicator ${statusPeltier ? 'status-on' : 'status-off'}`;
+                            
+                    document.querySelector('[value="peltier"]').nextElementSibling
+                        .querySelector('div > span + span').textContent = 
+                            statusPeltier ? 'LIGADO' : 'DESLIGADO';
+                });
+        }, 5000);
+    </script>
+</body>
+</html>
