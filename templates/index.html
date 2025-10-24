@@ -7,220 +7,500 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         :root {
-            --cor-aquecedor: #e74c3c;
+            --cor-primaria: #0071bc;
+            --cor-aquecedor: #ff5459;
             --cor-refrigerador: #3498db;
+            --cor-fundo: #e8e8e8;
+            --cor-texto: #333;
+            --cor-texto-secundario: #999;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: var(--cor-fundo);
             margin: 0;
-            padding: 20px;
-            color: #333;
+            padding: 0;
+            color: var(--cor-texto);
         }
         
         .container {
-            max-width: 800px;
+            max-width: 100%;
             margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            overflow: hidden;
+            background: var(--cor-fundo);
+            min-height: 100vh;
         }
         
         header {
-            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            background: var(--cor-primaria);
             color: white;
             padding: 20px;
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         h1 {
             margin: 0;
             font-size: 1.8rem;
+            font-weight: 600;
         }
         
-        .status-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            padding: 20px;
+        .menu-icon {
+            font-size: 1.8rem;
+            cursor: pointer;
         }
         
-        .sensor-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+        /* Seção Informações Gerais */
+        .info-section {
+            padding: 25px 20px;
+        }
+        
+        .info-section h2 {
+            color: var(--cor-primaria);
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .aviso-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 1rem;
+            color: var(--cor-texto-secundario);
+        }
+        
+        .aviso-container label {
+            margin-right: 15px;
+            font-weight: 500;
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: var(--cor-primaria);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: white;
+            top: 2px;
+            right: 2px;
             transition: transform 0.3s;
         }
         
-        .sensor-card:hover {
-            transform: translateY(-5px);
+        .toggle-switch.off {
+            background: #ccc;
         }
         
-        .sensor-title {
+        .toggle-switch.off::after {
+            transform: translateX(-30px);
+        }
+        
+        /* Timer Circular */
+        .timer-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+        }
+        
+        .circular-timer {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .timer-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .timer-circle circle {
+            fill: none;
+            stroke-width: 10;
+        }
+        
+        .timer-bg {
+            stroke: #d0d0d0;
+        }
+        
+        .timer-progress {
+            stroke: var(--cor-aquecedor);
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 0.5s;
+        }
+        
+        .timer-content {
+            text-align: center;
+            z-index: 1;
+        }
+        
+        .timer-value {
+            font-size: 4rem;
+            font-weight: 300;
+            color: var(--cor-texto);
+            line-height: 1;
+        }
+        
+        .timer-label {
             font-size: 1rem;
-            color: #6c757d;
-            margin-bottom: 5px;
+            color: var(--cor-texto-secundario);
+            margin-top: 8px;
         }
         
-        .sensor-value {
+        /* Ícones de Controle */
+        .controle-icons {
+            display: flex;
+            justify-content: space-around;
+            max-width: 450px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .icon-item {
+            text-align: center;
+        }
+        
+        .icon-circle {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 2.2rem;
-            font-weight: bold;
         }
         
-        .auecedor { color: var(--cor-aquecedor); }
-        .refrigerador { color: var(--cor-refrigerador); }
+        .icon-item span {
+            display: block;
+            font-size: 1rem;
+            color: var(--cor-texto);
+            font-weight: 500;
+        }
         
+        /* Card de Temperatura */
+        .temperatura-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px 20px;
+            margin: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .temperatura-card h3 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.4rem;
+            color: var(--cor-texto);
+            font-weight: 600;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 15px;
+        }
+        
+        .temp-valores {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .temp-item {
+            text-align: center;
+        }
+        
+        .temp-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .temp-icon.quente {
+            color: var(--cor-aquecedor);
+        }
+        
+        .temp-icon.frio {
+            color: var(--cor-refrigerador);
+        }
+        
+        .temp-value {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--cor-texto);
+        }
+        
+        .temp-unit {
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: var(--cor-texto-secundario);
+        }
+        
+        /* Seção Controles */
         .controle-container {
-            background: #f8f9fa;
-            padding: 20px;
-            border-top: 1px solid #e9ecef;
+            padding: 25px 20px;
+            background: var(--cor-fundo);
         }
         
         .controle-title {
-            text-align: center;
-            margin-top: 0;
-            color: #2c3e50;
+            color: var(--cor-primaria);
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            font-weight: 600;
         }
         
         .botoes-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
         
-        .controle-card {
+        .btn-controle {
             background: white;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            min-width: 180px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
-        }
-        
-        .dispositivo-nome {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            color: #2c3e50;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 50px;
+            border: 2px solid var(--cor-primaria);
+            border-radius: 12px;
+            padding: 18px 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--cor-primaria);
             cursor: pointer;
-            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             transition: all 0.3s;
-            margin: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
         
-        .btn-ligar {
-            background: #2ecc71;
+        .btn-controle:hover {
+            background: var(--cor-primaria);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 113, 188, 0.3);
         }
         
-        .btn-desligar {
-            background: #e74c3c;
-            color: white;
+        .btn-controle i {
+            font-size: 1.3rem;
         }
         
-        .btn:hover {
-            opacity: 0.9;
-            transform: scale(1.05);
+        /* Ocultar elementos antigos mas manter dados */
+        .status-container {
+            display: none;
         }
         
-        .status-indicator {
-            display: inline-block;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            margin-right: 8px;
+        /* Media queries para responsividade */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .circular-timer {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .timer-value {
+                font-size: 3.5rem;
+            }
+            
+            .temperatura-card {
+                margin: 20px 15px;
+            }
+            
+            .temp-icon {
+                font-size: 3rem;
+            }
+            
+            .temp-value {
+                font-size: 3rem;
+            }
+            
+            .botoes-container {
+                grid-template-columns: 1fr;
+            }
         }
         
-        .status-on {
-            background: #2ecc71;
-        }
-        
-        .status-off {
-            background: #e74c3c;
+        @media (max-width: 400px) {
+            .timer-value {
+                font-size: 3rem;
+            }
+            
+            .temp-value {
+                font-size: 2.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-temperature-high"></i> Pasteurizador de Leite</h1>
+            <h1>Dashboard</h1>
+            <div class="menu-icon">
+                <i class="fas fa-bars"></i>
+            </div>
         </header>
         
+        <!-- Mantém os sensores ocultos para o JavaScript funcionar -->
         <div class="status-container">
             <div class="sensor-card">
                 <div class="sensor-title">Aquecedor A</div>
-                <div class="sensor-value auecedor">{{ status.temperaturas.a }} °C</div>
+                <div class="sensor-value auecedor" id="temp-a">{{ status.temperaturas.a }} °C</div>
             </div>
             
             <div class="sensor-card">
                 <div class="sensor-title">Aquecedor B</div>
-                <div class="sensor-value auecedor">{{ status.temperaturas.b }} °C</div>
+                <div class="sensor-value auecedor" id="temp-b">{{ status.temperaturas.b }} °C</div>
             </div>
             
             <div class="sensor-card">
                 <div class="sensor-title">Refrigerador</div>
-                <div class="sensor-value refrigerador">{{ status.temperaturas.r }} °C</div>
+                <div class="sensor-value refrigerador" id="temp-r">{{ status.temperaturas.r }} °C</div>
             </div>
             
             <div class="sensor-card">
                 <div class="sensor-title">Temperatura Média</div>
-                <div class="sensor-value auecedor">{{ status.temperaturas.media }} °C</div>
+                <div class="sensor-value auecedor" id="temp-media">{{ status.temperaturas.media }} °C</div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2>Informações gerais</h2>
+            
+            <div class="aviso-container">
+                <label>Aviso sonoro:</label>
+                <div class="toggle-switch" id="toggleSwitch" onclick="toggleSound()"></div>
+            </div>
+            
+            <div class="timer-container">
+                <div class="circular-timer">
+                    <svg class="timer-circle" viewBox="0 0 100 100">
+                        <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+                        <circle class="timer-progress" cx="50" cy="50" r="45" 
+                                stroke-dasharray="283" 
+                                stroke-dashoffset="212" 
+                                id="timerProgress"></circle>
+                    </svg>
+                    <div class="timer-content">
+                        <div class="timer-value" id="timerDisplay">10:57</div>
+                        <div class="timer-label">Tempo percorrido</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controle-icons">
+                <div class="icon-item">
+                    <div class="icon-circle">
+                        <i class="fas fa-fire" style="color: var(--cor-aquecedor);"></i>
+                    </div>
+                    <span>Aquecimento</span>
+                </div>
+                
+                <div class="icon-item">
+                    <div class="icon-circle">
+                        <i class="fas fa-snowflake" style="color: var(--cor-refrigerador);"></i>
+                    </div>
+                    <span>Resfriamento</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="temperatura-card">
+            <h3>Temperatura</h3>
+            <div class="temp-valores">
+                <div class="temp-item">
+                    <div class="temp-icon quente">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <div>
+                        <span class="temp-value" id="display-temp-quente">68</span>
+                        <span class="temp-unit">°C</span>
+                    </div>
+                </div>
+                
+                <div class="temp-item">
+                    <div class="temp-icon frio">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <div>
+                        <span class="temp-value" id="display-temp-frio">10</span>
+                        <span class="temp-unit">°C</span>
+                    </div>
+                </div>
             </div>
         </div>
         
         <div class="controle-container">
-            <h2 class="controle-title">Controle de Dispositivos</h2>
+            <h2 class="controle-title">Controles</h2>
             <div class="botoes-container">
-                <div class="controle-card">
-                    <div class="dispositivo-nome">Ebulidor</div>
-                    <form action="/controle" method="post">
-                        <input type="hidden" name="dispositivo" value="ebulidor">
-                        <button type="submit" name="acao" value="ligar" class="btn btn-ligar">
-                            <i class="fas fa-power-off"></i> Ligar
-                        </button>
-                        <button type="submit" name="acao" value="desligar" class="btn btn-desligar">
-                            <i class="fas fa-power-off"></i> Desligar
-                        </button>
-                    </form>
-                    <div style="margin-top: 15px;">
-                        Status: 
-                        <span class="status-indicator {% if status.reles.ebulidor %}status-on{% else %}status-off{% endif %}"></span>
-                        {% if status.reles.ebulidor %}LIGADO{% else %}DESLIGADO{% endif %}
-                    </div>
-                </div>
+                <form action="/controle" method="post" style="display: contents;">
+                    <input type="hidden" name="dispositivo" value="ebulidor">
+                    <button type="submit" name="acao" value="parar" class="btn-controle">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>FORÇAR PARADA</span>
+                    </button>
+                </form>
                 
-                <div class="controle-card">
-                    <div class="dispositivo-nome">Peltier (Refrigeração)</div>
-                    <form action="/controle" method="post">
-                        <input type="hidden" name="dispositivo" value="peltier">
-                        <button type="submit" name="acao" value="ligar" class="btn btn-ligar">
-                            <i class="fas fa-power-off"></i> Ligar
-                        </button>
-                        <button type="submit" name="acao" value="desligar" class="btn btn-desligar">
-                            <i class="fas fa-power-off"></i> Desligar
-                        </button>
-                    </form>
-                    <div style="margin-top: 15px;">
-                        Status: 
-                        <span class="status-indicator {% if status.reles.peltier %}status-on{% else %}status-off{% endif %}"></span>
-                        {% if status.reles.peltier %}LIGADO{% else %}DESLIGADO{% endif %}
-                    </div>
-                </div>
+                <form action="/controle" method="post" style="display: contents;">
+                    <input type="hidden" name="dispositivo" value="peltier">
+                    <button type="submit" name="acao" value="limpeza" class="btn-controle">
+                        <i class="fas fa-spray-can"></i>
+                        <span>MODO LIMPEZA</span>
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 
     <script>
+        let soundEnabled = true;
+        let startTime = Date.now();
+        
+        // Toggle do aviso sonoro
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const toggle = document.getElementById('toggleSwitch');
+            toggle.classList.toggle('off');
+        }
+        
+        // Atualizar timer
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Atualizar progresso circular (exemplo: 25% de progresso)
+            const progress = (elapsed % 60) / 60;
+            const circumference = 283;
+            const offset = circumference - (progress * circumference);
+            document.getElementById('timerProgress').style.strokeDashoffset = offset;
+        }
+        
+        setInterval(updateTimer, 1000);
+        
         // Atualizar dados a cada 5 segundos
         setInterval(() => {
             fetch("/")
@@ -229,36 +509,27 @@
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(data, "text/html");
                     
-                    // Atualizar temperaturas
+                    // Atualizar temperaturas nos elementos ocultos
                     document.querySelectorAll('.sensor-value').forEach((el, index) => {
                         const newValue = doc.querySelectorAll('.sensor-value')[index].textContent;
                         el.textContent = newValue;
                     });
                     
-                    // Atualizar estados
-                    const statusEbulidor = doc.querySelector('[name="dispositivo"][value="ebulidor"]')
-                        .nextElementSibling.querySelector('.status-indicator').classList.contains('status-on');
+                    // Atualizar displays visíveis
+                    const tempMedia = doc.getElementById('temp-media');
+                    const tempR = doc.getElementById('temp-r');
                     
-                    const statusPeltier = doc.querySelector('[name="dispositivo"][value="peltier"]')
-                        .nextElementSibling.querySelector('.status-indicator').classList.contains('status-on');
+                    if (tempMedia) {
+                        const valor = tempMedia.textContent.replace(/[^\d.]/g, '');
+                        document.getElementById('display-temp-quente').textContent = Math.round(valor);
+                    }
                     
-                    // Atualizar indicadores
-                    document.querySelector('[value="ebulidor"]').nextElementSibling
-                        .querySelector('.status-indicator').className = 
-                            `status-indicator ${statusEbulidor ? 'status-on' : 'status-off'}`;
-                            
-                    document.querySelector('[value="ebulidor"]').nextElementSibling
-                        .querySelector('div > span + span').textContent = 
-                            statusEbulidor ? 'LIGADO' : 'DESLIGADO';
-                            
-                    document.querySelector('[value="peltier"]').nextElementSibling
-                        .querySelector('.status-indicator').className = 
-                            `status-indicator ${statusPeltier ? 'status-on' : 'status-off'}`;
-                            
-                    document.querySelector('[value="peltier"]').nextElementSibling
-                        .querySelector('div > span + span').textContent = 
-                            statusPeltier ? 'LIGADO' : 'DESLIGADO';
-                });
+                    if (tempR) {
+                        const valor = tempR.textContent.replace(/[^\d.]/g, '');
+                        document.getElementById('display-temp-frio').textContent = Math.round(valor);
+                    }
+                })
+                .catch(err => console.error('Erro ao atualizar dados:', err));
         }, 5000);
     </script>
 </body>
